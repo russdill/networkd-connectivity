@@ -1,0 +1,17 @@
+[Unit]
+Description=Connectivity probe for %I
+BindsTo=sys-subsystem-net-devices-%i.device
+Wants=systemd-networkd.service
+After=sys-subsystem-net-devices-%i.device network-online.target systemd-networkd.service
+PartOf=systemd-networkd.service
+ReloadPropagatedFrom=systemd-networkd.service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/connectivity-monitord %i
+ExecReload=/bin/kill -HUP $MAINPID
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+
+[Install]
+WantedBy=multi-user.target

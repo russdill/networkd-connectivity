@@ -1,0 +1,63 @@
+MY-CONNECTIVITY-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, enterprises
+        FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION
+        FROM SNMPv2-TC
+    Integer32
+        FROM SNMPv2-SMI;
+
+networkdConnectivityMIB MODULE-IDENTITY
+  LAST-UPDATED "202505010000Z"
+  ORGANIZATION "russdill.github.io"
+  CONTACT-INFO "russ.dill@gmail.com"
+  DESCRIPTION     "MIB module for per-interface connectivity state."
+  ::= { enterprises 99999 }
+
+networkdConnectivityTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF networkdConnectivityEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "A table of connectivity states for each interface."
+    ::= { networkdConnectivityMIB 1 }
+
+networkdConnectivityEntry OBJECT-TYPE
+    SYNTAX      networkdConnectivityEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "An entry containing ifIndex and its connectivity."
+    INDEX       { ifIndex }
+    ::= { networkdConnectivityTable 1 }
+
+networkdConnectivityEntry ::= SEQUENCE {
+    ifIndex           Integer32,
+    connectivityState  INTEGER {
+                           unknown(0),
+                           none(1),
+                           portal(2),
+                           limited(3),
+                           full(4)
+                       }
+}
+
+ifIndex OBJECT-TYPE
+    SYNTAX      Integer32 (1..2147483647)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "The SNMP ifIndex of the interface."
+    ::= { networkdConnectivityEntry 1 }
+
+connectivityState OBJECT-TYPE
+    SYNTAX      INTEGER {
+                   unknown(0),
+                   none(1),
+                   portal(2),
+                   limited(3),
+                   full(4)
+                }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Connectivity state (0..4) as per networkd-connectivity."
+    ::= { networkdConnectivityEntry 2 }
+
+END

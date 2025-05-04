@@ -1,0 +1,5 @@
+#!/usr/bin/dh-exec
+systemd/routemon-dispatcher.service usr/lib/systemd/system/
+routemon/routemon-dispatcher.py  => usr/bin/routemon-dispatcher
+conf/routemon-dispatcher            etc/default/
+routemon/ddclient.sh                /usr/lib/routemon-dispatcher.d/

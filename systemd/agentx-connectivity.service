@@ -1,0 +1,12 @@
+[Unit]
+Description=SNMP AgentX sub-agent for networkd-connectivity
+After=snmpd.service
+Wants=snmpd.service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/python3 /usr/share/networkd-connectivity-snmp/agentx-connectivity.py
+Environment=AGENTX_SOCKET=/var/agentx/master
+
+[Install]
+WantedBy=multi-user.target

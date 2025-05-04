@@ -1,0 +1,6 @@
+# Default configuration for connectivity-dispatcher
+
+# Extra arguments to pass to the dispatcher binary.
+# You can add: -T/--run-startup-triggers, -S/--script-dir to override hook dirs, etc.
+# Leave empty for defaults.
+connectivity_dispatcher_args="--run-startup-triggers"

@@ -1,0 +1,14 @@
+[Unit]
+Description=Run hooks on default route state changes
+Documentation=https://github.com/russdill/networkd-connectivity
+After=multi-user.target
+Wants=multi-user.target
+
+[Service]
+Type=notify
+Environment="routemon_dispatcher_args="
+EnvironmentFile=-/etc/default/%p
+ExecStart=/usr/bin/%p $routemon_dispatcher_args
+
+[Install]
+WantedBy=multi-user.target

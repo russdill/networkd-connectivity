@@ -1,0 +1,3 @@
+snmp/agentx-connectivity.py          usr/share/networkd-connectivity-snmp/
+snmp/NETWORKD-CONNECTIVITY-MIB.txt   usr/share/snmp/mibs/
+systemd/agentx-connectivity.service  lib/systemd/system/

@@ -1,0 +1,13 @@
+/debian/.debhelper/
+/debian/*.debhelper
+/debian/*.substvars
+/debian/tmp/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/python3-networkd-connectivity/
+/debian/networkd-connectivity-hooks/
+/debian/networkd-connectivity-snmp/
+/debian/routemon-dispatcher/
+/.pybuild/
+/build/
+*.egg-info

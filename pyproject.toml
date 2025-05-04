@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "networkd-connectivity"
+version = "1.0.0"
+description = "Per-interface connectivity probe"
+readme = "README.md"
+authors = [
+  {name = "Russ Dill", email = "russ.dill@gmail.com"}
+]
+
+license = {text = "MIT"} 
+requires-python = ">=3.10"
+
+dependencies = [
+  "aiohttp>=3.8",
+  "dbus-next>=0.2"
+]
+
+[project.urls]
+Homepage = "https://github.com/russdill/networkd-connectivity"
+Source   = "https://github.com/russdill/networkd-connectivity"
+Issues   = "https://github.com/russdill/networkd-connectivity/issues"
+
+[project.scripts]
+connectivity-monitord = "networkd_connectivity.daemon:cli_entry"
+connectivity-state   = "networkd_connectivity.cli:cli_entry"
+connectivity-dispatcher = "networkd_connectivity.dispatcher:cli_entry"
+
+[tool.setuptools.packages.find]
+# include the unit file inside the wheel
+where = ["src"]
+include = ["networkd_connectivity*"]

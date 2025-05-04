@@ -1,0 +1,5 @@
+usr/share/networkd-connectivity-hooks/metric_hook.py usr/lib/connectivity-dispatcher/limited.d/10-metric_hook.py
+usr/share/networkd-connectivity-hooks/metric_hook.py usr/lib/connectivity-dispatcher/full.d/10-metric_hook.py
+usr/share/networkd-connectivity-hooks/metric_hook.py usr/lib/connectivity-dispatcher/portal.d/10-metric_hook.py
+usr/share/networkd-connectivity-hooks/metric_hook.py usr/lib/connectivity-dispatcher/unknown.d/10-metric_hook.py
+usr/share/networkd-connectivity-hooks/metric_hook.py usr/lib/connectivity-dispatcher/none.d/10-metric_hook.py

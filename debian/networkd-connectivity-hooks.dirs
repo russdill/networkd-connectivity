@@ -1,0 +1,9 @@
+# root hook dirs
+usr/lib/connectivity-dispatcher
+
+# per-state hook dirs
+usr/lib/connectivity-dispatcher/unknown.d
+usr/lib/connectivity-dispatcher/none.d
+usr/lib/connectivity-dispatcher/portal.d
+usr/lib/connectivity-dispatcher/limited.d
+usr/lib/connectivity-dispatcher/full.d
