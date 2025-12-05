@@ -24,12 +24,7 @@ BASE_PATH = to_base_path(BUS_ROOT)
 IFACE_DB  = BUS_ROOT + "1.Device"
 STATES     = ["unknown", "none", "portal", "limited", "full"]
 
-async def fetch_state(bus, path: str) -> int:
-    intro = await bus.introspect(BUS_ROOT, path)
-    proxy = bus.get_proxy_object(BUS_ROOT, path, intro)
-    props = proxy.get_interface("org.freedesktop.DBus.Properties")
-    variant = await props.call_get(IFACE_DB, "Connectivity") # uint32
-    return variant.value
+
 
 async def main(show_header: bool) -> None:
     bus = await MessageBus(bus_type=BusType.SYSTEM).connect()

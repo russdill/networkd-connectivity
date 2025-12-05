@@ -28,7 +28,7 @@ BUS_ROOT  = "io.github.russdill.networkd_connectivity"
 BASE_PATH = to_base_path(BUS_ROOT)
 IFACE_DB  = BUS_ROOT + "1.Device"
 STATE_ENUM = ["unknown", "none", "portal", "limited", "full"]
-PATH_RE   = re.compile(rf"^{BASE_PATH}/([A-Za-z0-9_]+)$")
+
 
 def run_hooks(roots: List[pathlib.Path], state: str, iface: str):
     env = os.environ.copy()
@@ -90,8 +90,7 @@ async def main() -> None:
             # cleanup on cancellation
             props.off_properties_changed(on_props)
             logging.debug("detached IFACE=%s", ifname)
-            def cleanup():
-                props.off_properties_changed(on_props)
+
 
     # watch for new daemon instances
     def on_name_owner_changed(msg):

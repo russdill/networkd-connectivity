@@ -1,3 +1,10 @@
 #!/usr/bin/make -f
 %:
-	dh $@ --with python3 --buildsystem=pybuild
+	dh $@ --with python3,installsysusers --buildsystem=pybuild
+
+#override_dh_python3:
+#	dh_python3 -pnetworkd-connectivity-snmp \
+#		/usr/lib/python3*/dist-packages/networkd_connectivity/snmp
+#	dh_python3 -pnetworkd-connectivity-routemon \
+#		/usr/lib/python3*/dist-packages/networkd_connectivity/routemon
+#	dh_python3 --remaining-packages

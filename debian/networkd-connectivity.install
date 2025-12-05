@@ -1,0 +1,11 @@
+usr/bin/connectivity-monitord             usr/bin/
+usr/bin/connectivity-dispatcher           usr/bin/
+usr/bin/connectivity-state                usr/bin/
+usr/lib/python3*/dist-packages/networkd_connectivity/*.py    usr/lib/python3/dist-packages/networkd_connectivity/
+usr/lib/python3*/dist-packages/networkd_connectivity/_resources    usr/lib/python3/dist-packages/networkd_connectivity/
+usr/lib/python3*/dist-packages/networkd_connectivity-*.dist-info    usr/lib/python3/dist-packages/
+src/networkd_connectivity/io.github.russdill.networkd_connectivity.conf usr/share/dbus-1/system.d/
+README.md                                 usr/share/doc/networkd-connectivity/
+src/networkd_connectivity/_resources/conf/connectivity-dispatcher            etc/default/
+src/networkd_connectivity/_resources/systemd/connectivity-monitord@.service    usr/lib/systemd/system/
+src/networkd_connectivity/_resources/systemd/connectivity-dispatcher.service   usr/lib/systemd/system/

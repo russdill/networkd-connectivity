@@ -2,16 +2,19 @@ Source: networkd-connectivity
 Priority: optional
 Maintainer: Russ Dill <russ.dilL@gmail.com>
 Build-Depends: debhelper-compat (= 13), dh-python, python3-all, python3-setuptools,
-               pybuild-plugin-pyproject, dh-exec
+               pybuild-plugin-pyproject, dh-exec, python3-hatchling
 Standards-Version: 4.5.1
 Homepage: https://github.com/russdill/networkd-connectivity
 Rules-Requires-Root: no
 
-Package: python3-networkd-connectivity
+Package: networkd-connectivity
 Section: net
 Architecture: all
+Provides: python3-networkd-connectivity
+Breaks: python3-networkd-connectivity (<< 1.0.0)
+Replaces: python3-networkd-connectivity (<< 1.0.0)
 Depends: ${misc:Depends}, ${python3:Depends}, systemd, iproute2, python3-aiohttp,
-         python3-aiodns, python3-dbus-next, python3-pyroute2
+         python3-aiodns, python3-dbus-next, python3-pyroute2, python3-sdnotify
 Description: per-interface connectivity probe and dispatcher
  A daemon and dispatcher that publishes per-interface connectivity state
  and runs configurable hooks (metric tweaks, SNMP, ...).
@@ -31,7 +34,7 @@ Description:   SNMP AgentX subagent for networkd-connectivity
 Package: networkd-connectivity-hooks
 Section: net
 Architecture: all
-Depends: ${misc:Depends}, ${python3:Depends}, iproute2
+Depends: ${misc:Depends}, ${python3:Depends}, iproute2, systemd
 Description: Metric dispatcher hook script for networkd-connectivity
  This package provides the `metric_hook.py` script and installs lightweight 
  symlinks into `/usr/lib/connectivity-dispatcher/limited.d/` and
@@ -44,6 +47,15 @@ Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}
 Description: Dispatcher for changes in active default gateway. Useful for
  monitoring changes to the default gateway and outgoing IP address based on
- route metric changes. This package provides the `routemon-dispatcher.py`
+ route metric changes. This package provides the `routemon_dispatcher.py`
  script and associated service file. It also provides a script for updating
  ddclient (if present).
+
+Package: routemon-dispatcher-hooks
+Section: net
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, routemon-dispatcher
+Recommends: ddclient
+Description: Default hook script for routemon-dispatcher
+ This package installs the default hook for `routemon-dispatcher`, including:
+  - `ddclient.sh`: Updates ddclient configuration when default gateway changes.

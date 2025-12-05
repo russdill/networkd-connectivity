@@ -1,11 +1,10 @@
-MY-CONNECTIVITY-MIB DEFINITIONS ::= BEGIN
+NETWORKD-CONNECTIVITY-MIB DEFINITIONS ::= BEGIN
+
 IMPORTS
-    MODULE-IDENTITY, OBJECT-TYPE, enterprises
+    MODULE-IDENTITY, OBJECT-TYPE, enterprises, Integer32
         FROM SNMPv2-SMI
-    TEXTUAL-CONVENTION
-        FROM SNMPv2-TC
-    Integer32
-        FROM SNMPv2-SMI;
+    DisplayString
+        FROM SNMPv2-TC;
 
 networkdConnectivityMIB MODULE-IDENTITY
   LAST-UPDATED "202505010000Z"
@@ -15,29 +14,24 @@ networkdConnectivityMIB MODULE-IDENTITY
   ::= { enterprises 99999 }
 
 networkdConnectivityTable OBJECT-TYPE
-    SYNTAX      SEQUENCE OF networkdConnectivityEntry
+    SYNTAX      SEQUENCE OF NetworkdConnectivityEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION "A table of connectivity states for each interface."
     ::= { networkdConnectivityMIB 1 }
 
 networkdConnectivityEntry OBJECT-TYPE
-    SYNTAX      networkdConnectivityEntry
+    SYNTAX      NetworkdConnectivityEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION "An entry containing ifIndex and its connectivity."
     INDEX       { ifIndex }
     ::= { networkdConnectivityTable 1 }
 
-networkdConnectivityEntry ::= SEQUENCE {
+NetworkdConnectivityEntry ::= SEQUENCE {
     ifIndex           Integer32,
-    connectivityState  INTEGER {
-                           unknown(0),
-                           none(1),
-                           portal(2),
-                           limited(3),
-                           full(4)
-                       }
+    connectivityState  INTEGER,
+    connectivityString DisplayString
 }
 
 ifIndex OBJECT-TYPE
@@ -59,5 +53,12 @@ connectivityState OBJECT-TYPE
     STATUS      current
     DESCRIPTION "Connectivity state (0..4) as per networkd-connectivity."
     ::= { networkdConnectivityEntry 2 }
+
+connectivityString OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Connectivity state as a human-readable string."
+    ::= { networkdConnectivityEntry 3 }
 
 END

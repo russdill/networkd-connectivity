@@ -8,6 +8,9 @@
 /debian/networkd-connectivity-hooks/
 /debian/networkd-connectivity-snmp/
 /debian/routemon-dispatcher/
+/debian/networkd-connectivity/
+/debian/routemon-dispatcher-hooks/
 /.pybuild/
 /build/
 *.egg-info
+__pycache__/

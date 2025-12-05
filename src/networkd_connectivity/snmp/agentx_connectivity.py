@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# AgentX sub-agent that mirrors each connectivity-metricd instance
+# AgentX sub-agent that mirrors each connectivity-monitord instance
 # into an SNMP table row indexed by ifIndex.
 #
 # Run (unprivileged) with write access to the master agentX socket:
@@ -23,14 +23,18 @@ class ConnTable(pyagentx.Updater):
         for line in procs.stdout.splitlines():
             iface, state, _ = line.split()
             ifidx = ifindex_for(iface)
+            names = ["unknown", "none", "portal", "limited", "full"]
+            s_str = names[int(state)] if 0 <= int(state) < len(names) else "unknown"
+
             self.set_INTEGER(f"1.{ifidx}", ifidx)
             self.set_INTEGER(f"2.{ifidx}", int(state))
+            self.set_OCTETSTRING(f"3.{ifidx}", s_str)
 
 class ConnAgent(pyagentx.Agent):
     def setup(self):
         self.register(OID_ROOT, ConnTable)
 
-if __name__ == "__main__":
+def main():
     pyagentx.setup_logging()
     logger = logging.getLogger('pyagentx')
     logger.setLevel(logging.ERROR)
@@ -38,3 +42,6 @@ if __name__ == "__main__":
     agent = ConnAgent()
     n.notify("READY=1")
     agent.start()
+
+if __name__ == "__main__":
+    main()

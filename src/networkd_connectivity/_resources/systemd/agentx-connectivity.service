@@ -5,7 +5,7 @@ Wants=snmpd.service
 
 [Service]
 Type=notify
-ExecStart=/usr/bin/python3 /usr/share/networkd-connectivity-snmp/agentx-connectivity.py
+ExecStart=/usr/bin/agentx-connectivity
 Environment=AGENTX_SOCKET=/var/agentx/master
 
 [Install]

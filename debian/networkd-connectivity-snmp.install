@@ -1,3 +1,4 @@
-snmp/agentx-connectivity.py          usr/share/networkd-connectivity-snmp/
-snmp/NETWORKD-CONNECTIVITY-MIB.txt   usr/share/snmp/mibs/
-systemd/agentx-connectivity.service  lib/systemd/system/
+usr/lib/python3*/dist-packages/networkd_connectivity/snmp/*
+usr/bin/agentx-connectivity usr/bin
+src/networkd_connectivity/_resources/snmp/NETWORKD-CONNECTIVITY-MIB.txt   usr/share/snmp/mibs/
+src/networkd_connectivity/_resources/systemd/agentx-connectivity.service  lib/systemd/system/

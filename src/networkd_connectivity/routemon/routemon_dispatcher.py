@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# routemon.py - monitor default route changes and dispatch notification scripts,
+# routemon_dispatcher.py - monitor default route changes and dispatch notification scripts
 
 import ipaddress
 import logging

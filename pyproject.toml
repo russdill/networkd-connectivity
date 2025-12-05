@@ -1,35 +1,45 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
 
 [project]
 name = "networkd-connectivity"
-version = "1.0.0"
-description = "Per-interface connectivity probe"
+version = "1.1.0"
+description = "systemd-networkd connectivity probe and actions"
 readme = "README.md"
-authors = [
-  {name = "Russ Dill", email = "russ.dill@gmail.com"}
-]
-
-license = {text = "MIT"} 
+keywords = ["systemd", "networkd", "connectivity", "snmp", "agentx"]
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [ { name = "Russ Dill", email = "russ.dill@gmail.com" } ]
 
+# Runtime deps
 dependencies = [
-  "aiohttp>=3.8",
-  "dbus-next>=0.2"
+    "aiohttp>=3.9",
+    "dbus-next>=0.2",
+    "sdnotify",
 ]
-
-[project.urls]
-Homepage = "https://github.com/russdill/networkd-connectivity"
-Source   = "https://github.com/russdill/networkd-connectivity"
-Issues   = "https://github.com/russdill/networkd-connectivity/issues"
 
 [project.scripts]
 connectivity-monitord = "networkd_connectivity.daemon:cli_entry"
 connectivity-state   = "networkd_connectivity.cli:cli_entry"
 connectivity-dispatcher = "networkd_connectivity.dispatcher:cli_entry"
+agentx-connectivity = "networkd_connectivity.snmp.agentx_connectivity:main"
+routemon-dispatcher = "networkd_connectivity.routemon.routemon_dispatcher:main"
 
-[tool.setuptools.packages.find]
-# include the unit file inside the wheel
-where = ["src"]
-include = ["networkd_connectivity*"]
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4.1",
+]
+snmp = ["pyagentx"]
+routemon = ["pyroute2"]
+
+[tool.ruff]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.hatch.build]
+sources = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/networkd_connectivity"]
+exclude = ["*.conf"]

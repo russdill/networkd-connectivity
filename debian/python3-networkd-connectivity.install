@@ -1,9 +1,0 @@
-systemd/connectivity-monitord@.service    usr/lib/systemd/system/
-systemd/connectivity-dispatcher.service   usr/lib/systemd/system/
-usr/bin/connectivity-monitord             usr/bin/
-usr/bin/connectivity-dispatcher           usr/bin/
-usr/bin/connectivity-state                usr/bin/
-usr/lib/python3*/dist-packages/networkd_connectivity*    usr/lib/python3/dist-packages/
-src/networkd_connectivity/io.github.russdill.networkd_connectivity.conf usr/share/dbus-1/system.d/
-README.md                                 usr/share/doc/networkd-connectivity/
-conf/connectivity-dispatcher            etc/default/

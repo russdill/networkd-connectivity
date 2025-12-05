@@ -1,0 +1,33 @@
+[Unit]
+Description=Connectivity probe for %I
+BindsTo=sys-subsystem-net-devices-%i.device
+Wants=systemd-networkd.service
+After=sys-subsystem-net-devices-%i.device network-online.target systemd-networkd.service
+PartOf=systemd-networkd.service
+ReloadPropagatedFrom=systemd-networkd.service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/connectivity-monitord %i
+ExecReload=/bin/kill -HUP $MAINPID
+# CAP_NET_RAW is required for SO_BINDTODEVICE on kernels < 5.7.
+# On newer kernels, it is not required if the user has appropriate cgroup permissions or if checks are relaxed.
+#AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
+#CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+
+User=connectivityd
+Group=connectivityd
+SupplementaryGroups=systemd-network
+
+# Hardening
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+MemoryDenyWriteExecute=yes
+
+[Install]
+WantedBy=multi-user.target

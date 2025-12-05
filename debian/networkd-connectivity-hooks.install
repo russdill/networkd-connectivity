@@ -1,1 +1,1 @@
-hooks/metric_hook.py    usr/share/networkd-connectivity-hooks
+src/networkd_connectivity/_resources/hooks/metric_hook.py    usr/lib/networkd-connectivity-hooks

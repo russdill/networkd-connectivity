@@ -121,16 +121,43 @@ def load_interface_settings(ifname: str) -> dict:
 def bind_all_sockets(ifname: str) -> None:
     # Attempt SO_BINDTODEVICE every new AF_INET/6 socket.
     opt = ifname.encode() + b"\0"
+    
+    # Test binding immediately to fail fast if permissions are missing.
+    # If the interface is missing (ENODEV), we WARN but continue, so the 
+    # daemon can survive a temporary device loss and report "down".
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, opt)
+    except OSError as e:
+        if e.errno == errno.EPERM:
+            sys.stderr.write(f"Error: Failed to bind to interface '{ifname}': {e.strerror}\n")
+            sys.stderr.write("       (Is the process running as root/CAP_NET_RAW?)\n")
+            sys.exit(1)
+        elif e.errno == errno.ENODEV:
+            logging.warning("Interface '%s' not found (ENODEV); probes will fail until it appears.", ifname)
+        else:
+            sys.stderr.write(f"Error: Failed to bind to interface '{ifname}': {e.strerror}\n")
+            sys.exit(1)
+
     real = socket.socket
 
     @wraps(real)
     def factory(*args, **kw):
         s = real(*args, **kw)
-        try:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, opt)
-        except OSError as e:
-            if e.errno not in (errno.EPERM, errno.ENOPROTOOPT,
-                               errno.EINVAL, errno.ENODEV):
+        # We only care about AF_INET/AF_INET6 for probing
+        if s.family in (socket.AF_INET, socket.AF_INET6):
+            try:
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, opt)
+            except OSError as e:
+                s.close()
+                # If the interface is gone (ENODEV), we re-raise so the probe fails 
+                # (counting as 'down/limited') rather than using the default route.
+                if e.errno == errno.ENODEV:
+                    logging.debug("Failed to bind socket: %s (counting as down)", e)
+                    raise
+                
+                # Other errors (permissions, etc) -> log error and raise
+                logging.error("Failed to bind socket to %s: %s", ifname, e)
                 raise
         return s
     socket.socket = factory
@@ -199,8 +226,17 @@ async def _probe_one(sess: aiohttp.ClientSession, url: str, resp: bytes) -> int:
         return 3                   # limited
 
 
-async def assess(urls: List[tuple], nameservers: List[str], timeout: int = 5) -> int:
+async def assess(urls: List[tuple], nameservers: List[str], ifname: str, timeout: int = 5) -> int:
     resolver = AsyncResolver(nameservers=nameservers) if nameservers else None
+    if resolver:
+        try:
+            # Bind the c-ares channel to the device.
+            # resolver (AsyncResolver) -> _resolver (aiodns.DNSResolver) -> _channel (pycares.Channel)
+            resolver._resolver._channel.set_local_dev(ifname.encode())
+        except Exception as e:
+            logging.warning("Failed to bind DNS resolver to %s: %s", ifname, e)
+            return 1
+
     conn = aiohttp.TCPConnector(ttl_dns_cache=1, resolver=resolver)
     async with aiohttp.ClientSession(
         connector=conn, timeout=aiohttp.ClientTimeout(total=timeout)
@@ -249,7 +285,7 @@ async def run() -> None:
     async def probe_loop():
         while True:
             nameservers = await link_dns(bus, ifindex)
-            state = await assess(urls, nameservers, timeout)
+            state = await assess(urls, nameservers, args.interface, timeout)
             if state != status_obj.Connectivity:
                 n.notify(f'STATUS={CONNECTIVITY[state]}')
                 logging.info("%s: %s -> %s", args.interface,
@@ -339,8 +375,6 @@ async def run() -> None:
         pass
 
 def cli_entry() -> None:
-    if os.geteuid() != 0:
-        sys.stderr.write("Warning: root or CAP_NET_RAW recommended when binding sockets\n")
     asyncio.run(run())
 
 if __name__ == "__main__":
