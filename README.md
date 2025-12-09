@@ -143,6 +143,12 @@ hysteresisbackoff=600
  `HysteresisBackoff` period, it will be forced to wait `HysteresisDelay` before
  being considered to be back to `full`.
 
+Note that for connectivity probes to function for a device with a lower route
+metric `rp_filter` must be disabled (`0`) or set to loose (`1`), otherwise
+returning packets are rejected by the kernel. This can be configured by sysctl
+or within the `[Network]` section of the `.network` file for a given interface
+with  `IPv4ReversePathFilter=no` or `IPv4ReversePathFilter=loose`.
+
 ### Dynamic DNS (`ddclient`)
 
 The provided `ddclient.sh` hook executes whenever the current best default route
